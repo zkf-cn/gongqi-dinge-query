@@ -161,10 +161,12 @@ table.st select{padding:2px 4px;border:1px solid var(--bd);border-radius:4px;fon
   /* 表格横向滑动，避免压扁 */
   table.qt,table.st{min-width:540px;width:auto}
   .results{overflow-x:auto}
-  /* 搜索栏：第1行搜索框，第2行下拉框+查询+重置（一行内） */
+  /* 搜索栏：第1行搜索框，第2行下拉框+查询+重置（必须一行内） */
   .searchbar{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;align-items:center}
   .searchbar input[type=text]{flex:1 1 100%;width:100%;min-width:0;font-size:15px;padding:10px 12px}
-  .searchbar select{flex:1 1 auto;max-width:none;font-size:13px;padding:8px 6px;min-width:0}
+  /* select 是替换元素，flex-basis 用 auto 会被最长 option 卡住宽度导致换行；
+     改 basis=0 让它从 0 开始 grow=1 平分剩余空间，保证按钮不换行 */
+  .searchbar select{flex:1 1 0;max-width:none;font-size:13px;padding:8px 6px;min-width:0;width:auto}
   .searchbar .btn{flex:0 0 62px;min-width:0;padding:9px 0;font-size:13px}
   .hint{font-size:11px;line-height:1.5}
   /* 触摸目标放大 */
