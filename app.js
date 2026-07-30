@@ -370,15 +370,15 @@
   };
   $('#btnCsv').onclick = () => {
     if (!stats.length) return;
-    const rows = [['编号', '定额项目', '所属部分', '规格/参数', '类别', '工期(天)']];
+    const rows = [['编号', '定额项目', '规格/参数', '类别', '工期(天)']];
     let total = 0;
     stats.forEach(s => {
       const p = pagesById[s.pid]; const it = p.items[s.idx];
       const val = s.sel >= 0 ? it[s.sel] : '';
       const n = parseFloat(val); if (!isNaN(n)) total += n;
-      rows.push([it[0], p.path.join(' › '), p.path[0], paramSummary(p, it), s.sel >= 0 ? p.headers[s.sel] : '', val]);
+      rows.push([it[0], p.path.join(' › '), paramSummary(p, it), s.sel >= 0 ? p.headers[s.sel] : '', val]);
     });
-    rows.push(['', '', '', '', '合计', String(total)]);
+    rows.push(['', '', '', '合计', String(total)]);
     const csv = '\ufeff' + rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
