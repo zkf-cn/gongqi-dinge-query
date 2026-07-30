@@ -272,9 +272,17 @@
     const parts = [];
     p.headers.forEach((h, i) => {
       if (i === 0 || dcs.includes(i) || h === '备注') return;
-      if (it[i] && it[i] !== '—') parts.push(`<b>${esc(h)}</b>：${esc(it[i])}`);
+      if (it[i] && it[i] !== '—') parts.push(`<b style="color:#1e5fa8">${esc(h)}</b>：${esc(it[i])}`);
     });
     return parts.join('；');
+  }
+
+  /* 统计列表「定额项目」列：完整类目路径，末级加粗，其余保持原字体颜色/大小 */
+  function pathHtml(p) {
+    const segs = (p.path && p.path.length) ? p.path : [p.title];
+    if (segs.length <= 1) return `<b>${esc(segs[0])}</b>`;
+    const lead = segs.slice(0, -1).map(s => esc(s)).join(' › ');
+    return `<span style="color:#9aa6b5;font-size:11px">${lead} › </span><b>${esc(segs[segs.length - 1])}</b>`;
   }
 
   function renderStats() {
@@ -303,7 +311,7 @@
       }
       h += `<tr>
         <td class="code">${esc(it[0])}</td>
-        <td style="text-align:left">${esc(p.title)}<span style="color:#9aa6b5;font-size:11px">｜${esc(p.path.slice(0,-1).join(' › ').replace(/\s+/g,' '))}</span></td>
+        <td style="text-align:left">${pathHtml(p)}</td>
         <td style="text-align:left">${paramSummaryHtml(p, it)}</td>
         <td>${selHtml}</td>
         <td class="days">${isNaN(val) ? esc(it[s.sel] || '—') : val}</td>
@@ -368,7 +376,7 @@
       const p = pagesById[s.pid]; const it = p.items[s.idx];
       const val = s.sel >= 0 ? it[s.sel] : '';
       const n = parseFloat(val); if (!isNaN(n)) total += n;
-      rows.push([it[0], p.title, p.path[0], paramSummary(p, it), s.sel >= 0 ? p.headers[s.sel] : '', val]);
+      rows.push([it[0], p.path.join(' › '), p.path[0], paramSummary(p, it), s.sel >= 0 ? p.headers[s.sel] : '', val]);
     });
     rows.push(['', '', '', '', '合计', String(total)]);
     const csv = '\ufeff' + rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
